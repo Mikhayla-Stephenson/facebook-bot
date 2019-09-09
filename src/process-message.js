@@ -1,37 +1,32 @@
 const fetch = require('node-fetch');
+const API_AI_TOKEN = '692c976530a9470db9bda570f142f520';
+const apiAiClient = require('apiai')(API_AI_TOKEN);
 
-const { FACEBOOK_ACCESS_TOKEN } = process.env;
+const request = require('request');
 
-const sendTextMessage = (userId, text) => {
-	return fetch(
-		`https://graph.facebook.com/v2.6/me/messages?access_token=EAAL09gwyIQkBAJeNyJNoOFGsERA7jvWrZAJHZAsZAZBF2LVL5ZB9ldu9Y2zaTNUl7iP3HLrXx339lA4NQDyhaQDRPsNO10uJllsYTFZBQqsucIupiCv71ZBiSQXQsrj08tlcagOuxxVKaZAba32ZBhecxtaF6y6UlsOQEV81cjmt4jcn951muZC5cb`,
-		{
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			method: 'POST',
-			body: JSON.stringify({
-				messaging_type: 'RESPONSE',
-				recipient: {
-					id: userId
-				},
-				message: {
-					text
-				}
-			})
+const FACEBOOK_ACCESS_TOKEN =
+	'EAAL09gwyIQkBAJeNyJNoOFGsERA7jvWrZAJHZAsZAZBF2LVL5ZB9ldu9Y2zaTNUl7iP3HLrXx339lA4NQDyhaQDRPsNO10uJllsYTFZBQqsucIupiCv71ZBiSQXQsrj08tlcagOuxxVKaZAba32ZBhecxtaF6y6UlsOQEV81cjmt4jcn951muZC5cb';
+
+const sendTextMessage = (senderId, text) => {
+	request({
+		url: 'https://graph.facebook.com/v2.6/me/messages',
+		qs: { access_token: FACEBOOK_ACCESS_TOKEN },
+		method: 'POST',
+		json: {
+			recipient: { id: senderId },
+			message: { text }
 		}
-	);
+	});
 };
 
 module.exports = (event) => {
-	let time = event.timestamp;
-	var date = new Date(time);
-	var hour = date.getHours();
-	console.log(hour);
-	const userId = event.sender.id;
-	let mess = 'Keep Working Helen';
-	if (hour < 7 || hour > 19) {
-		mess = 'Go Home Helen';
-	}
-	return sendTextMessage(userId, mess);
+	const senderId = event.sender.id;
+	const message = event.message.text;
+	const apiaiSession = apiAiClient.textRequest(message, { sessionId: 'crowdbotics_bot' });
+	apiaiSession.on('response', (response) => {
+		const result = response.result.fulfillment.speech;
+		sendTextMessage(senderId, result);
+	});
+	apiaiSession.on('error', (error) => console.log(error));
+	apiaiSession.end();
 };
