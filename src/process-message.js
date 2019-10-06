@@ -1,11 +1,10 @@
 const fetch = require('node-fetch');
-const API_AI_TOKEN = '692c976530a9470db9bda570f142f520';
+const API_AI_TOKEN = '****';
 const apiAiClient = require('apiai')(API_AI_TOKEN);
 
 const request = require('request');
 
-const FACEBOOK_ACCESS_TOKEN =
-	'EAAL09gwyIQkBAJeNyJNoOFGsERA7jvWrZAJHZAsZAZBF2LVL5ZB9ldu9Y2zaTNUl7iP3HLrXx339lA4NQDyhaQDRPsNO10uJllsYTFZBQqsucIupiCv71ZBiSQXQsrj08tlcagOuxxVKaZAba32ZBhecxtaF6y6UlsOQEV81cjmt4jcn951muZC5cb';
+const FACEBOOK_ACCESS_TOKEN = '****';
 
 const sendTextMessage = (senderId, text) => {
 	request({
