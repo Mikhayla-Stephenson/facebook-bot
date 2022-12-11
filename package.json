@@ -13,7 +13,7 @@
 		"apiai": "^4.0.3",
 		"body-parser": "^1.19.0",
 		"cool-ascii-faces": "^1.3.4",
-		"express": "^4.17.1",
+		"express": "^4.17.3",
 		"node-fetch": "^2.6.0",
 		"request": "^2.88.0",
 		"save": "^2.4.0"
